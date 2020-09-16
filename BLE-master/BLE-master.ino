@@ -6,7 +6,7 @@ bt_interface bt_i = {4, "INIT", &blue_serial};
 char in = ' ';
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(38400);
   initialise_interface(&bt_i);
 }
 
