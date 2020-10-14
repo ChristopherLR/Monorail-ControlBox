@@ -8,9 +8,9 @@ comm_status initialise_interface(bt_interface *frame) {
 comm_status transmit_frame(bt_interface *frame) {
   if (frame->length == 0)
     return NOP;
-  for (int i = 0; i < frame->length && i < BUFFER_SIZE; i++) {
+  for (int i = 0; i < frame->length && i < BUFFER_SIZE; i++)
     frame->ss->write(frame->msg[i]);
-  }
+
   frame->ss->write("\r\n");
   frame->length = 0;
   return SUCCESS;
@@ -31,9 +31,9 @@ comm_status build_frame(bt_interface *frame, char c) {
 /*
  * Sends over a single char
  */
-comm_status quick_transmit(bt_interface *frame, char c) {
+comm_status quick_transmit(bt_interface *frame, message c) {
   frame->ss->write(c);
-  frame->ss->write("\n");
+//  frame->ss->write("\n");
   frame->length = 0;
   return SUCCESS;
 }
