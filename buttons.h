@@ -1,4 +1,4 @@
-#include <stdint.h>
+#pragma once
 
 typedef enum { DOOR_OPEN, DOOR_CLOSE, OC_NONE } open_close_state;
 typedef enum { B_EAST, B_WEST, EW_NONE } east_west_state;
@@ -42,8 +42,8 @@ typedef struct {
 } btns_state_machine;
 
 typedef struct {
-  char line1[16];
-  char line2[16];
+  char * line1;
+  char * line2;
   bool to_tx;
 } lcd_state_machine;
 

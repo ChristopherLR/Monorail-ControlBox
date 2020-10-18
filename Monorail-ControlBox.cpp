@@ -2,6 +2,8 @@
 #include "BTInterface.h"
 #include <AltSoftSerial.h>
 #include "buttons.h"
+#include "lcd_lib.h"
+#include "LiquidCrystal_I2C.h"
 
 // Set DEBUG if you want serial printing for helpers
 #define DEBUG // << Comment this out for performace testing
@@ -40,6 +42,18 @@ char transmit_state();
 message read_msg();
 void print_msg(message);
 
+// LCD sm
+
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+
+char line1[17] = "S:    >     B:  ";
+char line2[17] = "D:   M:         ";
+
+lcd_state_machine lcd_sm = {
+  line1,
+  line2
+};
+
 // Counter / Timer configuration
 #define TICKS_PER_SECOND 61
 volatile unsigned char SYSTEM_COUNTER = 0;
@@ -58,7 +72,6 @@ comm_status comm_state = NOP;
 #include "Helpers.h"
 
 void setup() {
-  noInterrupts();
   Serial.begin(BAUD_RATE);
   initialise_interface(&bt_i);
 
@@ -95,13 +108,21 @@ void setup() {
   // PORTB CONFIG
   pinMode(EMG_BUTTON, INPUT_PULLUP);
   pinMode(EMG_LED, OUTPUT);
-  interrupts();
+
+  // initialize the lcd
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0,0);
+  lcd.print(line1);
+  lcd.setCursor(0,1);
+  lcd.print(line2);
+  // Print a message to the LCD.
 }
 
 void loop() {
-  message blue_in = read_msg();
+  //message blue_in = read_msg();
 
-  print_msg(blue_in);
+  //print_msg(blue_in);
 
   check_state();
   char should_tx = next_state();
@@ -313,20 +334,41 @@ char next_state() {
 char transmit_state() {
   // TODO: Do some ACK/NACK between the master and slave
   message to_send = NONE;
+  bool lcd_tx = false;
   
   if (oc_button.to_tx) {
+    oc_button.to_tx = false;
     if (oc_button.cur_state == DOOR_OPEN) to_send = OPEN;
     if (oc_button.cur_state == DOOR_CLOSE) to_send = CLOSE; 
+    display_open_close(oc_button.cur_state, &lcd_sm);
+    quick_transmit(&bt_i, to_send);
+    lcd_tx = true;
   }
 
   if (ew_button.to_tx){
+    ew_button.to_tx = false;
     if (ew_button.cur_state == B_EAST) to_send = EAST;
     if (ew_button.cur_state == B_WEST) to_send = WEST;
+    display_curr(ew_button.cur_state, &lcd_sm);
+    quick_transmit(&bt_i, to_send);
+    lcd_tx = true;
   }
 
   if (ss_button.to_tx){
+    ss_button.to_tx = false;
     if (ss_button.cur_state == B_START) to_send = START;
     if (ss_button.cur_state == B_STOP) to_send = STOP;
+    display_start_stop(ss_button.cur_state, &lcd_sm);
+    quick_transmit(&bt_i, to_send);
+    lcd_tx = true;
+  }
+
+  if (lcd_tx) {
+    // write lines to display
+    lcd.setCursor(0,0);
+    lcd.print(line1);
+    lcd.setCursor(0,1);
+    lcd.print(line2);
   }
 
   return 1;
