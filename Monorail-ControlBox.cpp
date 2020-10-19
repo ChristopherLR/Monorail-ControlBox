@@ -62,7 +62,8 @@ volatile unsigned char LED_COUNTER = 0;
 volatile unsigned char BUTTON_PRESSED_TIM = 0;
 
 // BLUETOOTH DECLARATION
-AltSoftSerial blue_serial(8, 9);
+// 8 - RX , 9 - TX
+AltSoftSerial blue_serial;
 bt_interface bt_i = {4, "INIT", &blue_serial};
 char in = ' ';
 comm_status comm_state = NOP;
@@ -120,9 +121,9 @@ void setup() {
 }
 
 void loop() {
-  //message blue_in = read_msg();
+  message blue_in = read_msg();
 
-  //print_msg(blue_in);
+  print_msg(blue_in);
 
   check_state();
   char should_tx = next_state();
