@@ -45,20 +45,11 @@ void display_start_stop(start_stop_state s, lcd_state_machine *sm) {
   }
 }
 
-void display_emergency(emergency_state s, lcd_state_machine *sm) {
+void display_emergency(lcd_state_machine *sm) {
     char ln1 [] = "EMERGENCY STOP  ";
     char ln2 [] = "PLEASE RESET    ";
-  switch (s) {
-    case B_EMERGENCY:
-      insert_chars(ln1, sm->line1, 16, 0);
-      insert_chars(ln2, sm->line2, 16, 0);
-      break;
-    case B_NOT_EMERGENCY:
-      // Do nothing when there is no emergency state
-      break;
-    default:
-      break;
-  }
+    insert_chars(ln1, sm->line1, 16, 0);
+    insert_chars(ln2, sm->line2, 16, 0);
 }
 
 void display_curr(east_west_state s, lcd_state_machine *sm) {

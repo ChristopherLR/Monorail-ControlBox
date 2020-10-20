@@ -312,24 +312,34 @@ void check_state() {
 // Returns whether or not we should transmit
 char next_state() {
   if (emg_button.cur_state == B_EMERGENCY) {
-  // emergency();
+    panic();
   }
 
   // We may want to perform some analysis here
   // we can also slow down the state machine by adding a delay here
-  if (ew_button.cur_state != ew_button.nx_state) {
+  if (ew_button.cur_state != ew_button.nx_state) 
     ew_button.cur_state = ew_button.nx_state;
-  }
 
-  if (ss_button.cur_state != ss_button.nx_state) {
+  if (ss_button.cur_state != ss_button.nx_state) 
     ss_button.cur_state = ss_button.nx_state;
-  }
 
-  if (oc_button.cur_state != oc_button.nx_state) {
+  if (oc_button.cur_state != oc_button.nx_state) 
     oc_button.cur_state = oc_button.nx_state;
-  }
 
   return (oc_button.to_tx || ew_button.to_tx || ss_button.to_tx);
+}
+
+// Neverending loop which print reset to the display and just sends
+// emergency over BLE
+void panic() {
+    display_emergency(&lcd_sm);
+    lcd.setCursor(0,0);
+    lcd.print(line1);
+    lcd.setCursor(0,1);
+    lcd.print(line2);
+    while(true) {
+      quick_transmit(&bt_i, EMERGENCY);
+    }
 }
 
 char transmit_state() {
@@ -421,27 +431,57 @@ void print_msg(message msg) {
 //    Serial.println("NONE");
     break;
    case EAST:
+    ew_button.to_tx = true;
+    ew_button.nx_state = B_EAST;
+    #ifdef DEBUG
     Serial.println("EAST");
+    #endif
     break;
    case WEST:
+    ew_button.to_tx = true;
+    ew_button.nx_state = B_WEST;
+    #ifdef DEBUG
     Serial.println("WEST");
+    #endif
     break;
    case START:
+    ss_button.to_tx = true;
+    ss_button.nx_state = B_START;
+    #ifdef DEBUG
     Serial.println("START");
+    #endif
     break;
    case STOP:
+    ss_button.to_tx = true;
+    ss_button.nx_state = B_STOP;
+    #ifdef DEBUG
     Serial.println("STOP");
+    #endif
     break;
    case OPEN:
+    oc_button.to_tx = true;
+    oc_button.nx_state = DOOR_OPEN;
+    #ifdef DEBUG
     Serial.println("OPEN");
+    #endif
     break;
    case CLOSE:
+    oc_button.to_tx = true;
+    oc_button.nx_state = DOOR_CLOSE;
+    #ifdef DEBUG
     Serial.println("CLOSE");
+    #endif
     break;
    case EMERGENCY:
+    emg_button.to_tx = true;
+    emg_button.cur_state = B_EMERGENCY;
+    #ifdef DEBUG
     Serial.println("EMERGENCY");
+    #endif
     break;
    default:
+    #ifdef DEBUG
     Serial.println("DEFAULT");
+    #endif
   }  
 }
