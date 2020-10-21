@@ -10,5 +10,6 @@ void display_start_stop(start_stop_state s, lcd_state_machine *sm);
 void display_emergency(lcd_state_machine *sm);
 void display_curr(east_west_state s, lcd_state_machine *sm);
 void display_next(east_west_state s, lcd_state_machine *sm);
+void display_debug(char debugInfo[], lcd_state_machine *sm);
 
 #endif
