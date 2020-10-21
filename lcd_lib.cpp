@@ -85,3 +85,7 @@ void display_next(east_west_state s, lcd_state_machine *sm) {
       break;
   }
 }
+
+void display_debug(char debugInfo[], lcd_state_machine *sm) {
+  insert_chars(debugInfo, sm->line2, 4, 12);
+}
