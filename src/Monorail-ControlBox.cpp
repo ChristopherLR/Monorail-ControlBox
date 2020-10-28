@@ -46,8 +46,8 @@ void print_msg(message);
 
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
-char line1[17] = "S:    >     B:  ";
-char line2[17] = "D:   M:         ";
+char line1[17] = "MOVE:       B:  ";
+char line2[17] = "DIR:     DOOR:  ";
 
 lcd_state_machine lcd_sm = {
   line1,
