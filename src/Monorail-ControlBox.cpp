@@ -136,7 +136,7 @@ void loop() {
 
 // Interrupt Service Routine for PORT D
 ISR(PCINT2_vect) {
-  if (BUTTON_PRESSED_TIM >= TICKS_PER_SECOND) {
+  if (BUTTON_PRESSED_TIM >= TICKS_PER_SECOND -50) {
     BUTTON_PRESSED_TIM = 0;
     // Equivalent to: if (digitalRead(pin) == 0)
     if (!(PIND & ( 1 << SS_BUTTON ))) ss_button.is_pressed = true;

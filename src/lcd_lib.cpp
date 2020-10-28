@@ -30,16 +30,16 @@ void display_start_stop(start_stop_state s, lcd_state_machine *sm) {
     char st [] = "ST";
     char sp [] = "SP";
     char start [] = "START";
-    char stop [] = "STOP";
+    char stop [] = "STOP ";
   switch (s) {
     case B_START:
       // line2, index 7: ST
-      insert_chars(start, sm->line1, 2, 5);
+      insert_chars(start, sm->line1, 5, 5);
       insert_chars(st, sm->line1, 2, 14);
       break;
     case B_STOP:
       // line2, index 7: SP
-      insert_chars(stop, sm->line1, 2, 5);
+      insert_chars(stop, sm->line1, 5, 5);
       insert_chars(sp, sm->line1, 2, 14);
       break;
     default:
@@ -57,14 +57,18 @@ void display_emergency(lcd_state_machine *sm) {
 void display_curr(east_west_state s, lcd_state_machine *sm) {
     char east[] = "EAST";
     char west[] = "WEST";
+    char es[] = "ET";
+    char we[] = "WT";
     switch (s) {
     case B_EAST:
       // line1, index 2: EAST
-      insert_chars(east, sm->line2, 4, 2);
+      insert_chars(east, sm->line2, 4, 4);
+      insert_chars(es, sm->line1, 2, 14);
       break;
     case B_WEST:
       // line1, index 2: WEST
-      insert_chars(west, sm->line2, 4, 2);
+      insert_chars(west, sm->line2, 4, 4);
+      insert_chars(we, sm->line1, 2, 14);
       break;
     default:
       break;
