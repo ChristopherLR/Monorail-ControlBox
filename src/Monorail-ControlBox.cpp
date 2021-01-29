@@ -46,8 +46,8 @@ void print_msg(message);
 
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
-char line1[17] = "S:    >     B:  ";
-char line2[17] = "D:   M:         ";
+char line1[17] = "MOVE:       B:  ";
+char line2[17] = "DIR:     DOOR:  ";
 
 lcd_state_machine lcd_sm = {
   line1,
@@ -136,7 +136,7 @@ void loop() {
 
 // Interrupt Service Routine for PORT D
 ISR(PCINT2_vect) {
-  if (BUTTON_PRESSED_TIM >= TICKS_PER_SECOND) {
+  if (BUTTON_PRESSED_TIM >= TICKS_PER_SECOND -50) {
     BUTTON_PRESSED_TIM = 0;
     // Equivalent to: if (digitalRead(pin) == 0)
     if (!(PIND & ( 1 << SS_BUTTON ))) ss_button.is_pressed = true;
